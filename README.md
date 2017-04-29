@@ -4,6 +4,8 @@ Roam the 10×10 Dungeon in search of the Hidden Treasure and the Damsel in Distr
 
 Keep an eye out for the Magic Sword, which you will need to slay the Dragon, the Crystal Ball, with which to see the contents of Adjacent Rooms, and the Enchanted Rope, which will save you if you fall into a Pit. Beware the Wyverns who fly about the Dungeon and may carry you off to another room at any time. Go in Good Health, return Wealthy and Victorious!
 
+Read more [here.](http://futurescale.com/2011/01/08/dungeon-joe-a-casual-touch-focused-strategy-game/)
+
 ![Dungeon Joe](screenshot.png "Dungeon Joe")
 
 ## Platforms / Technologies
@@ -12,9 +14,6 @@ Keep an eye out for the Magic Sword, which you will need to slay the Dragon, the
 * [ActionScript 3](https://en.wikipedia.org/wiki/ActionScript) 
 * [Adobe Flex 4.5](http://www.adobe.com/devnet/flex/articles/introducing-flex45sdk.html)
 * [Adobe Air](http://www.adobe.com/products/air/faq.html)
-
-Read more [here.](http://futurescale.com/2011/01/08/dungeon-joe-a-casual-touch-focused-strategy-game/)
-
 
 ## License
 * Dungeon Joe - Copyright © 2011-2017 Cliff Hall 
