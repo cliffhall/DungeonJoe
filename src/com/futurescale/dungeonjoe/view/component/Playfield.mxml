@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Dungeon Joe
+By Cliff Hall <clifford.hall@futurescale.com>
+Copyright(c) 2010, Futurescale, Inc. Some rights reserved.
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="1024" height="600" 
+		 xmlns:component="com.futurescale.dungeonjoe.view.component.*" 
+		 showEffect="{fxIntro}" creationComplete="setState(ViewStates.PLAYFIELD_WELCOME)">
+
+	<fx:Script>
+		<![CDATA[
+			import com.futurescale.dungeonjoe.controller.constant.embed.EmbeddedImages;
+			import com.futurescale.dungeonjoe.controller.constant.view.ViewStates;
+			
+			public static const BUTTON_RESTART:String 	= "restart";
+			public static const BUTTON_START:String 	= "start";
+			public static const BUTTON_EXIT:String 		= "exit";
+			
+			[Bindable] public var gameOver:Boolean = false; 
+			
+			/**
+			 * Set the View State for the Playfield
+			 */
+			public function setState( viewState:String ):void
+			{
+				switch ( viewState ) 
+				{
+					case ViewStates.PLAYFIELD_WELCOME:
+						visible 		= false;
+						gameOver 		= false;
+						currentState 	= viewState;
+						visible 		= true;
+						break;
+
+					case ViewStates.PLAYFIELD_PLAY:
+					case ViewStates.PLAYFIELD_LEVEL:
+					case ViewStates.PLAYFIELD_SCORE:
+						currentState	= viewState;
+						break;
+				}
+			}
+			
+			/**
+			 * Handle the Restart Button
+			 */
+			private function handleRestartButton(event:MouseEvent):void
+			{
+				// notify mediator
+				dispatchEvent( new Event( BUTTON_RESTART ) );
+			}
+			
+			/**
+			 * Handle the Start Button
+			 */
+			private function handleStartButton(event:MouseEvent):void
+			{
+				// notify mediator
+				dispatchEvent( new Event( BUTTON_START ) );
+			}
+			
+			
+			/**
+			 * Handle the Exit Button
+			 */
+			private function handleExitButton(event:MouseEvent):void
+			{
+				// notify mediator
+				dispatchEvent( new Event( BUTTON_EXIT ) );
+			}
+			
+		]]>
+	</fx:Script>
+
+	<!-- EFFECTS -->
+	<fx:Declarations>
+		<mx:Fade id="fxIntro" alphaFrom="0" alphaTo="1" duration="750"/>
+		<s:Move3D id="fxSwitchIn" zTo="0" zFrom="1000" duration="350"/>
+		<s:Parallel id="fxAreaIn" effectEnd="area.resetAdjacentAlphas()">
+			<mx:Fade alphaFrom="0" alphaTo="1" duration="450"/>
+			<s:Move3D zTo="0" zFrom="1000" duration="450"/>
+		</s:Parallel>
+		<s:Fade id="fxStartButton" alphaFrom="0" alphaTo="{!gameOver?1:0}" duration="1200"/>
+	</fx:Declarations>
+	
+	<!-- STATES -->
+	<s:states>
+		<s:State name="Welcome" />
+		<s:State name="Level" 	/>
+		<s:State name="Play" 	/>
+		<s:State name="Score" 	/>
+	</s:states>
+	
+	<!-- PLAYFIELD BACKGROUND -->
+	<mx:Image id="playfield" source="{EmbeddedImages.PLAYFIELD}" x="0" y="0"/>
+	
+	<!-- HEALTH AND TITLE -->
+	<component:HealthAndTitle id="healthAndTitle" x="244" y="20"/>
+	
+	<!-- WELCOME OVERLAY -->
+	<mx:Image id="welcome" source="{EmbeddedImages.WELCOME}" x="0" y="0" includeIn="Welcome"  />
+	
+	<!-- LEVEL CONTENTS -->
+	<component:LevelContents id="levelContents" x="130" y="400" z="500"/>
+	
+	<!-- CHARACTER  -->
+	<component:Joe id="joe" x="20" y="20" showEffect="{fxSwitchIn}" />
+	
+	<!-- LOCATION  -->
+	<component:Location id="location" x="914" y="15" showEffect="{fxSwitchIn}" />
+	
+	<!-- TREASURE -->
+	<component:Treasure id="treasure" x="130" y="20"/>
+	
+	<!-- DAMSEL -->
+	<component:Damsel id="damsel" x="804" y="20"/>
+	
+	<!-- SWORD -->
+	<component:Sword id="sword" x="20" y="130"/>
+	
+	<!-- CRYSTAL BALL -->
+	<component:CrystalBall id="crystalBall" x="20" y="250"/>
+	
+	<!-- ROPE -->
+	<component:Rope id="rope" x="20" y="370" />
+	
+	<!-- DRAGON -->
+	<component:Dragon id="dragon" x="914" y="130"/>
+	
+	<!-- PIT -->
+	<component:Pit id="pit" x="914" y="250"/>
+	
+	<!-- WYVERN -->
+	<component:Wyvern id="wyvern" x="914" y="370"/>
+	
+	<!-- RESTART BUTTON-->
+	<s:Button id="btnRestart" click="handleRestartButton(event)" x="20" y="490"
+			  skinClass="com.futurescale.dungeonjoe.view.skin.RestartButtonSkin"/>
+	
+	<!-- START BUTTON-->
+	<s:Button id="btnStart" mouseUp="handleStartButton(event)" x="467" y="490" visible="{!gameOver}" addedEffect="{fxStartButton}"
+			  skinClass="com.futurescale.dungeonjoe.view.skin.StartButtonSkin" includeIn="Welcome,Score"/>
+	
+	<!-- EXIT BUTTON-->
+	<s:Button id="btnExit" mouseUp="handleExitButton(event)" x="914" y="490"
+			  skinClass="com.futurescale.dungeonjoe.view.skin.ExitButtonSkin"/>
+	
+	<!-- SCORE DISPLAY -->
+	<component:ScoreDisplay id="scoreDisplay" x="-130" y="25" z="500"/>
+	
+	<!-- DUNGEON ROOM -->
+	<component:Area id="area" x="130" y="130" showEffect="{fxAreaIn}"/>
+
+</s:Group>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Dungeon Joe
+By Cliff Hall <clifford.hall@futurescale.com>
+Copyright(c) 2010, Futurescale, Inc. Some rights reserved.
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
+		 xmlns:component="com.futurescale.dungeonjoe.view.component.*" 
+		 currentState="{ViewStates.CHARACTER_PLAY}">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.futurescale.dungeonjoe.controller.constant.embed.EmbeddedImages;
+			import com.futurescale.dungeonjoe.controller.constant.view.ViewStates;
+			
+			/**
+			 * Set the View State for the Character
+			 */
+			public function setState( viewState:String ):void
+			{
+				switch ( viewState ) 
+				{
+					case ViewStates.CHARACTER_IDLE:
+						visible 		= false;
+						currentState 	= viewState;
+						break;
+					
+					case ViewStates.CHARACTER_DEAD:
+					case ViewStates.CHARACTER_PLAY:
+						visible 		= true;
+						currentState	= viewState;
+						break;
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="Idle" />
+		<s:State name="Dead" />
+		<s:State name="Play" />
+	</s:states>
+	
+	<!-- BACKGROUND -->
+	<mx:Image id="background" source="{EmbeddedImages.RED_TUNNEL}" x="0" y="0" includeIn="Dead"/>
+
+	<!-- DEAD -->
+	<mx:Image id="dead" source="{EmbeddedImages.JOE_DEAD}" x="0" y="0" includeIn="Dead"/>
+	
+	<!-- OBJECT -->
+	<mx:Image id="object" source="{EmbeddedImages.JOE}" x="0" y="0" includeIn="Play"/>
+	
+</s:Group>

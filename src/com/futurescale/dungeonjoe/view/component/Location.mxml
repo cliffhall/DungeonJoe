@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 verticalAlign="top" gap="0" horizontalAlign="center"
+		 width="90" height="90" paddingTop="0" paddingBottom="0"
+		 creationComplete="setState(ViewStates.LOCATION_IDLE)">
+
+	<fx:Script>
+		<![CDATA[
+			import com.futurescale.dungeonjoe.controller.constant.view.ViewStates;
+			
+			[Bindable] private var location:String = "??";
+			[Bindable] private var level:String = "Level ?";
+
+			/**
+			 * Set the View State for the Health and Title display.
+			 */
+			public function setState( viewState:String ):void
+			{
+				switch (viewState)
+				{
+					case ViewStates.LOCATION_IDLE:
+						visible=false;
+						currentState = viewState;
+						break;
+
+					case ViewStates.LOCATION_LEVEL:
+					case ViewStates.LOCATION_PLAY:
+						visible=true;
+						currentState = viewState;
+						break;
+				}
+			}
+			
+			public function setLocation( location:String ):void
+			{
+				this.location = location;
+			}
+			
+			public function setLevel( level:String ):void
+			{
+				this.level = level;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<!-- STATES -->
+	<s:states>
+		<s:State name="Idle" />
+		<s:State name="Level" />
+		<s:State name="Play" />
+	</s:states>
+	
+	<!-- LOCATION -->
+	<mx:Label includeIn="Play" text="{location}" styleName="locationDisplay"/>
+
+	<!-- LEVEL -->
+	<mx:Label includeIn="Play, Level" text="{level}" styleName="levelDisplay"/>
+	
+</s:VGroup>

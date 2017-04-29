@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="90" height="90">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.futurescale.dungeonjoe.controller.constant.view.ViewStates;
+			
+			public static const ITEM_NEARBY:String 	= "itemNearby";
+			public static const TAKE:String 		= "take";
+			public static const USE:String 			= "use";
+			
+			public var type:String;
+			/**
+			 * Set the View State for the Icon display.
+			 */
+			public function setState( viewState:String ):void
+			{
+				switch (viewState)
+				{
+					case ViewStates.ICON_IDLE:
+						visible=false;
+						removeListeners();
+						currentState = viewState;
+						break;
+					
+					case ViewStates.ICON_HAVE:
+						visible=true;
+						listenForUse();
+						currentState = viewState;
+						break;
+
+					case ViewStates.ICON_ROOM:
+						visible=true;
+						listenForTake();
+						currentState = viewState;
+						break;
+
+					case ViewStates.ICON_SLOT:						
+					case ViewStates.ICON_WARN:
+						visible=true;
+						removeListeners();
+						currentState = viewState;
+						break;
+				}
+			}
+			
+			public function announceNearby():void
+			{
+				dispatchEvent( new Event( ITEM_NEARBY, true ) );
+			}
+			
+			private function listenForTake():void
+			{
+				if (!listening) addEventListener( MouseEvent.CLICK, handleTake );
+			}
+			
+			private function listenForUse():void
+			{
+				if (!listening) addEventListener( MouseEvent.CLICK, handleUse );
+			}
+			
+			private function removeListeners():void
+			{
+				removeEventListener( MouseEvent.CLICK, handleTake );
+				removeEventListener( MouseEvent.CLICK, handleUse );
+				listening=false;				
+			}
+			
+			private function handleTake(event:MouseEvent):void
+			{
+				dispatchEvent( new Event( TAKE, true ) );
+			}
+			
+			private function handleUse(event:MouseEvent):void
+			{
+				dispatchEvent( new Event( USE, true ) );
+			}
+			
+			private var listening:Boolean = false;
+		]]>
+	</fx:Script>
+	
+</s:Group>

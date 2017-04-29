@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Dungeon Joe
+By Cliff Hall <clifford.hall@futurescale.com>
+Copyright(c) 2010, Futurescale, Inc. Some rights reserved.
+-->
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
+			 minWidth="21" minHeight="21"
+			 alpha.disabled="0.5">
+	
+	<fx:Metadata>
+		<![CDATA[ 
+		[HostComponent("spark.components.Button")]
+		]]>
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[         
+			import com.futurescale.dungeonjoe.controller.constant.embed.EmbeddedImages;
+			static private const exclusions:Array = ["labelElement"];
+			override public function get colorizeExclusions():Array {return exclusions;}
+		]]>        
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="up" />
+		<s:State name="down" />
+		<s:State name="over" />
+		<s:State name="disabled" />
+	</s:states>
+
+	<s:BitmapImage left="0" right="0" top="0" bottom="0" source="{EmbeddedImages.BUTTON_RESTART_UP}" excludeFrom="down" />
+	
+	<s:BitmapImage left="0" right="0" top="0" bottom="0" source="{EmbeddedImages.BUTTON_RESTART_DOWN}" includeIn="down" />
+
+</s:SparkSkin>

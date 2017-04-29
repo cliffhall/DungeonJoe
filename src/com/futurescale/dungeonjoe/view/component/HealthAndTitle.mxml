@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Dungeon Joe
+By Cliff Hall <clifford.hall@futurescale.com>
+Copyright(c) 2010, Futurescale, Inc. Some rights reserved.
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="540" height="100%" 
+		 xmlns:component="com.futurescale.dungeonjoe.view.component.*" 
+		 currentState="{ViewStates.HEALTH_AND_TITLE_IDLE}">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.futurescale.dungeonjoe.controller.constant.embed.EmbeddedImages;
+			import com.futurescale.dungeonjoe.controller.constant.view.ViewStates;
+			
+			private var health:Number;
+			
+			/**
+			 * Set the View State for the Health and Title display.
+			 */
+			public function setState( viewState:String ):void
+			{
+				switch (viewState)
+				{
+					case ViewStates.HEALTH_AND_TITLE_SCORE:
+					case ViewStates.HEALTH_AND_TITLE_IDLE:
+						currentState = viewState;
+						break;
+					
+					case ViewStates.HEALTH_AND_TITLE_PLAY:
+						currentState = viewState;
+						setHealth(100);
+						break;
+				}
+			}
+			
+			/**
+			 * Set the health value and update the display.
+			 */
+			public function setHealth( health:Number ):void
+			{
+				this.health = health;
+				healthDisplay.width = health * (540/100);
+			}
+			
+		]]>
+	</fx:Script>
+
+	<!-- EFFECTS -->
+	<fx:Declarations>
+		<s:Parallel id="fxSwitchIn" >
+			<s:Fade alphaFrom="0" alphaTo="1" duration="600"/>
+			<s:Move xFrom="-1000" xTo="0" duration="600"/>
+		</s:Parallel>
+	</fx:Declarations>
+
+	<!-- STATES -->
+	<s:states>
+		<s:State name="Idle" />
+		<s:State name="Play" />
+		<s:State name="Score" />
+	</s:states>
+	
+	<!-- HEALTH -->
+	<mx:Image id="healthDisplay" source="{EmbeddedImages.HEALTH}" scaleContent="false" x="0" y="0" excludeFrom="Idle" addedEffect="{fxSwitchIn}"/>
+	
+	<!-- TITLE -->
+	<mx:Image id="title" source="{EmbeddedImages.TITLE}" x="0" y="0" excludeFrom="Score"/>
+	
+</s:Group>

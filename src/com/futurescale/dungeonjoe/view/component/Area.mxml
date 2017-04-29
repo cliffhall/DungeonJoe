@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Dungeon Joe
+By Cliff Hall <clifford.hall@futurescale.com>
+Copyright(c) 2010, Futurescale, Inc. Some rights reserved.
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"  
+		 xmlns:component="com.futurescale.dungeonjoe.view.component.*" 
+		 visible="false" creationComplete="setState( ViewStates.DUNGEON_AREA_IDLE );"
+		 width="{ROOM_WIDTH}" height="{ROOM_HEIGHT}" hideEffect="{fxAreaOut}"
+		 clipAndEnableScrolling="true">
+
+	
+	<fx:Script>
+		<![CDATA[
+			import com.futurescale.dungeonjoe.controller.constant.embed.EmbeddedImages;
+			import com.futurescale.dungeonjoe.controller.constant.view.ViewStates;
+			import com.futurescale.dungeonjoe.model.entity.DungeonItem;
+			import com.futurescale.dungeonjoe.model.entity.Room;
+
+			public static const MOVE_NORTH:String 	= "moveNorth";
+			public static const MOVE_SOUTH:String 	= "moveSouth";
+			public static const MOVE_EAST:String 	= "moveEast";
+			public static const MOVE_WEST:String 	= "moveWest";
+			public static const DONE_VIEWING:String = "doneViewing";
+			
+			public var currentRoom:Room;
+			public var adjacentRooms:Array;
+
+			private static const ROOM_WIDTH:Number 		= 764;
+			private static const ROOM_HEIGHT:Number 	= 450;
+			private static const MIN_DRAG:Number 		= 15;
+			private static const MAX_DRAG:Number 		= 130;
+			
+			private static const VIEW_DEPTH:Number 		= 1100;
+			private static const VIEW_TIME:Number 		= 5000;
+			
+			
+			[Bindable] public var dx:Number = 0; // Delta
+			[Bindable] public var dy:Number = 0;
+			
+			[Bindable] private var ox:Number = 0; // Origin
+			[Bindable] private var oy:Number = 0;
+			
+			[Bindable] private var tx:Number = 0; // Target	
+			[Bindable] private var ty:Number = 0;
+			
+			private var dragging:Boolean=false;
+			private var scrolling:Boolean=false;
+			private var viewing:Boolean=false;
+			private var navigateEvent:Event;
+			
+			
+			/**
+			 * Set the View State for the DungeonRoom display.
+			 */
+			public function setState( viewState:String ):void
+			{
+				switch (viewState)
+				{
+					case ViewStates.DUNGEON_AREA_IDLE:
+						visible=false;
+						resetOffsets();
+						currentState = viewState;
+						break;
+					
+					case ViewStates.DUNGEON_AREA_PLAY:
+						here.alpha = 1;
+						north.alpha = 0;
+						south.alpha = 0;
+						east.alpha = 0;
+						west.alpha = 0;
+						visible=true;
+						currentState = viewState;
+						break;
+				}
+			}
+
+			public function resetAdjacentAlphas():void
+			{
+				north.alpha = 1;
+				south.alpha = 1;
+				east.alpha = 1;
+				west.alpha = 1;
+			}
+			
+			public function clearAdjacentAlphas():void
+			{
+				north.alpha = 0;
+				south.alpha = 0;
+				east.alpha = 0;
+				west.alpha = 0;
+			}
+			
+			public function resetOffsets():void
+			{
+				dx = 0;
+				dy = 0;
+				tx = 0;
+				ty = 0;
+				ox = 0;
+				oy = 0;
+				dragging=false;
+				viewing=false;
+				scrolling=false;
+			}
+
+			public function wyvernArrives():void
+			{
+				hereItems.addElement( new Wyvern() );
+			}
+			
+			public function arriveInRoom( room:Room, roomsNSEW:Array ):void
+			{
+				// store the new area
+				currentRoom 	= room;
+				adjacentRooms 	= roomsNSEW;
+				
+				// populate current room
+				createRoomItems( hereItems, currentRoom );
+				
+				// reset offsets
+				resetOffsets();
+				
+				// populate adjacent rooms
+				createRoomItems( northItems, 	adjacentRooms[0] );
+				createRoomItems( southItems, 	adjacentRooms[1] );
+				createRoomItems( eastItems, 	adjacentRooms[2] );
+				createRoomItems( westItems, 	adjacentRooms[3] );
+
+			}
+			
+			private function createRoomItems( container:Group, room:Room ):void
+			{
+				container.removeAllElements();
+				for each ( var item:DungeonItem in room.items )
+				{
+					var icon:com.futurescale.dungeonjoe.view.component.Icon;
+					switch (item.type)
+					{
+						case DungeonItem.BALL:
+							icon = new CrystalBall();
+							break;
+						
+						case DungeonItem.DAMSEL:
+							icon = new Damsel();
+							break;
+						
+						case DungeonItem.DRAGON:
+							icon = new Dragon();
+							break;
+						
+						case DungeonItem.PIT:
+							icon = new Pit();
+							break;
+						
+						case DungeonItem.ROPE:
+							icon = new Rope();
+							break;
+						
+						case DungeonItem.SWORD:
+							icon = new Sword();
+							break;
+						
+						case DungeonItem.TREASURE:
+							icon = new Treasure();
+							break;
+						
+						case DungeonItem.WYVERN:
+							icon = new Wyvern();
+							break;
+						
+					}
+					if (icon) 
+					{
+						container.addElement( icon );
+						if ( room != currentRoom ) icon.announceNearby();
+					} 
+				}
+			}
+			
+			// Begin Dragging
+			private function onStartDrag( event:MouseEvent ):void
+			{
+				if ( !dragging && !scrolling && !viewing && !currentRoom.hasPit() && !currentRoom.hasDragon() && !currentRoom.hasWyvern() )
+				{
+					dragging = true;
+					dx=0;
+					dy=0;
+					ox=event.localX;
+					oy=event.localY;
+					navigateEvent = null;
+				}
+			}
+			
+			// Dragging
+			private function onDrag(event:MouseEvent):void
+			{
+				if (dragging) {
+					var tempdx:Number = (ox > event.localX)?-(ox - event.localX):(event.localX - ox);
+					var tempdy:Number = (oy > event.localY)?-(oy - event.localY):(event.localY - oy);
+					// Only continue dragging if we haven't exceeded threshold
+					if (Math.abs(tempdx) <= MAX_DRAG && Math.abs(tempdy) <= MAX_DRAG) 
+					{
+						if ( Math.abs(tempdx) > Math.abs(tempdy) ) {
+							dx = tempdx;
+							dy = 0;
+						} else {
+							dx = 0;
+							dy = tempdy;
+						}
+					} else {
+						onStopDrag(event);
+					}
+				}
+			}
+			
+			// Finished Dragging
+			private function onStopDrag(event:MouseEvent):void
+			{
+				if (!dragging) return;
+				
+				// no longer dragging
+				dragging = false;
+				
+				// origin is now the let up coord of the direction we're moving
+				ox = dx; 
+				oy = dy; 
+				
+				// tx/ty are the target locations for animation
+				tx = ( dx > 0 )?ROOM_WIDTH:( dx < 0 )?-(ROOM_WIDTH):0;
+				ty = ( dy > 0 )?ROOM_HEIGHT:( dy < 0 )?-(ROOM_HEIGHT):0;
+				
+				// move if dx or dy > threshold, else reset to 0 and stay
+				if ( ( Math.abs(dx) >= MIN_DRAG ) && ( Math.abs(dx) >= Math.abs(dy) ) )
+				{
+					navigateEvent = new Event( (dx > 0) ? MOVE_WEST : MOVE_EAST );
+					startScrolling();	
+				} 
+				else if ( ( Math.abs(dy) > MIN_DRAG ) && ( Math.abs(dy) > Math.abs(dx) ) )
+				{  
+					navigateEvent = new Event( (dy > 0) ? MOVE_NORTH : MOVE_SOUTH );
+					startScrolling();
+				} 
+				else 
+				{
+					resetOffsets();
+				}
+			}
+			
+			private function startScrolling():void
+			{
+				dragging = false;
+				scrolling = true; 
+				fxMove.play();	
+			}
+			
+			private function stopScrolling():void	
+			{
+				dispatchEvent( navigateEvent  );
+			}
+			
+			
+			public function startViewing():void
+			{
+				viewing = true;
+				fxView.play();	
+			}
+			
+			private function stopViewing():void	
+			{
+				dispatchEvent( new Event( DONE_VIEWING ) );
+			}
+			
+			
+			
+			
+		]]>
+	</fx:Script>
+
+	<!-- EFFECTS -->
+	<fx:Declarations>
+		<s:Parallel id="fxAreaOut" duration="450" effectStart="clearAdjacentAlphas()">
+			<s:Fade target="{here}" alphaFrom=".25" alphaTo="0" easer="{fxPower}"/>
+			<s:Move3D target="{this}" zFrom="0" zTo="{VIEW_DEPTH}" easer="{fxPower}"/>
+		</s:Parallel>
+		<s:Power id="fxPower" exponent="2" easeInFraction="0"/>
+		<s:Animate id="fxMove" disableLayout="false" easer="{fxPower}"
+				   target="{this}" repeatCount="1" duration="750"
+				   effectEnd="stopScrolling()">
+			<s:motionPaths>
+				<s:SimpleMotionPath property="dx" valueFrom="{ox}" valueTo="{tx}"/>
+				<s:SimpleMotionPath property="dy" valueFrom="{oy}" valueTo="{ty}"/>
+			</s:motionPaths>
+		</s:Animate>
+		<s:Sequence id="fxView">
+			<s:Parallel duration="750">
+				<s:Fade targets="{[here,north,south,east,west]}" alphaFrom="1" alphaTo=".15" easer="{fxPower}"/>
+				<s:Move3D target="{this}" zFrom="0" zTo="{VIEW_DEPTH}" easer="{fxPower}"/>
+			</s:Parallel>
+			<s:Parallel duration="750" >
+				<s:Fade startDelay="{VIEW_TIME}" targets="{[here,north,south,east,west]}" alphaFrom=".15" alphaTo="1"  easer="{fxPower}"/>
+				<s:Move3D target="{this}" startDelay="{VIEW_TIME}" zTo="0" zFrom="{VIEW_DEPTH}" easer="{fxPower}" effectEnd="stopViewing()"/>
+			</s:Parallel>
+		</s:Sequence>
+	</fx:Declarations>
+	
+	<!-- STATES -->
+	<s:states>
+		<s:State name="Idle" />
+		<s:State name="Play" />
+	</s:states>
+	
+	<!-- HERE -->
+	<mx:Image id="here" source="{EmbeddedImages.ROOM}"
+			  width="{ROOM_WIDTH}" height="{ROOM_HEIGHT}"
+			  mouseDown="onStartDrag(event)"
+			  mouseUp="onStopDrag(event)"
+			  mouseMove="onDrag(event)"
+			  x="{dx}" y="{dy}"/>
+	
+	<!-- NORTH ROOM -->
+	<mx:Image id="north" source="{EmbeddedImages.ROOM}"  
+			  width="{ROOM_WIDTH}" height="{ROOM_HEIGHT}" 
+			  x="0" y="{-ROOM_HEIGHT + dy}"/>
+	
+	<!-- SOUTH ROOM -->
+	<mx:Image id="south" source="{EmbeddedImages.ROOM}" 
+			  width="{ROOM_WIDTH}" height="{ROOM_HEIGHT}" 
+			  x="0" y="{ROOM_HEIGHT + dy}"/>
+	
+	<!-- EAST ROOM -->
+	<mx:Image id="east" source="{EmbeddedImages.ROOM}" 
+			  width="{ROOM_WIDTH}" height="{ROOM_HEIGHT}" 
+			  x="{ROOM_WIDTH + dx}" y="0"/>
+	
+	<!-- WEST ROOM -->
+	<mx:Image id="west" source="{EmbeddedImages.ROOM}" 
+			  width="{ROOM_WIDTH}" height="{ROOM_HEIGHT}" 
+			  x="{-ROOM_WIDTH + dx}" y="0"/>
+	
+	<!-- HERE ITEMS-->
+	<s:HGroup id="hereItems" 
+			  horizontalAlign="center" verticalAlign="middle"
+			  width="{ROOM_WIDTH}" height="{ROOM_HEIGHT}" 
+			  x="{here.x}" y="{here.y}"/>
+	
+	<!-- NORTH ITEMS-->
+	<s:HGroup id="northItems" 
+			  horizontalAlign="center"  verticalAlign="middle"
+			  width="{ROOM_WIDTH}" height="{ROOM_HEIGHT}" 
+			  x="{north.x}" y="{north.y}"/>
+	
+	<!-- SOUTH ITEMS-->
+	<s:HGroup id="southItems" 
+			  horizontalAlign="center"  verticalAlign="middle"
+			  width="{ROOM_WIDTH}" height="{ROOM_HEIGHT}" 
+			  x="{south.x}" y="{south.y}"/>
+	
+	<!-- EAST ITEMS-->
+	<s:HGroup id="eastItems" 
+			  horizontalAlign="center"  verticalAlign="middle"
+			  width="{ROOM_WIDTH}" height="{ROOM_HEIGHT}" 
+			  x="{east.x}" y="{east.y}"/>
+	
+	<!-- WEST ITEMS-->
+	<s:HGroup id="westItems" 
+			  horizontalAlign="center"  verticalAlign="middle"
+			  width="{ROOM_WIDTH}" height="{ROOM_HEIGHT}" 
+			  x="{west.x}" y="{west.y}"/>
+		
+</s:Group>

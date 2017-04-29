@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Dungeon Joe
+By Cliff Hall <clifford.hall@futurescale.com>
+Copyright(c) 2010, Futurescale, Inc. Some rights reserved.
+-->
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:component="com.futurescale.dungeonjoe.view.component.*"
+					   applicationComplete="onApplicationComplete()"
+					   backgroundColor="#000000" frameRate="24"
+					   preloader="DungeonJoePreloader" width="1024" height="600"
+					   >	
+	<fx:Script>
+		<![CDATA[
+			import com.futurescale.dungeonjoe.model.modelns;
+			import com.futurescale.dungeonjoe.ApplicationFacade;
+			use namespace modelns;
+			
+			private function onApplicationComplete():void
+			{
+				ApplicationFacade.getInstance().startup(this);
+				playfield.visible=true;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+
+		@font-face { 
+			src: url("assets/fonts/SCRIPTBL.TTF"); 
+			font-family: scriptMTBold; 
+			embedAsCFF: false;
+		}
+		
+		.locationDisplay
+		{
+			font-family: scriptMTBold;
+			font-size: 54pt;
+			color: #858585;
+		}
+		
+		.levelDisplay
+		{
+			font-family: scriptMTBold;
+			font-size: 18pt;
+			color: #858585;
+		}
+		
+		
+	</fx:Style>
+		
+	<!-- PLAYFIELD -->
+	<component:Playfield id="playfield" visible="false"/>
+	
+</s:Application>

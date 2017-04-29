@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 verticalAlign="top" gap="0" horizontalAlign="left"
+		 width="764" paddingTop="0" paddingBottom="0"
+		 showEffect="{fxShow}"
+		 creationComplete="setState(ViewStates.LEVEL_CONTENTS_IDLE)">
+
+	<fx:Script>
+		<![CDATA[
+			import com.futurescale.dungeonjoe.controller.constant.view.ViewStates;
+			import com.futurescale.dungeonjoe.model.entity.DungeonItem;
+			
+			import flashx.textLayout.formats.VerticalAlign;
+			
+			import mx.controls.Label;
+			import mx.core.IVisualElement;
+			
+			import spark.layouts.HorizontalAlign;
+			
+			/**
+			 * Set the View State for the Level Contents display.
+			 */
+			public function setState( viewState:String ):void
+			{
+				switch (viewState)
+				{
+					case ViewStates.LEVEL_CONTENTS_IDLE:
+						visible=false;
+						currentState = viewState;
+						break;
+
+					case ViewStates.LEVEL_CONTENTS_LEVEL:
+						visible=true;
+						currentState = viewState;
+						break;
+				}
+			}
+
+			public function clearContentDisplays():void
+			{
+				dragon.removeAllElements();
+				booty.removeAllElements();
+				tools.removeAllElements();
+				pits.removeAllElements();
+				wyverns.removeAllElements();
+				
+			}
+			public function addItem( item:DungeonItem, location:String ):void
+			{
+				var icon:com.futurescale.dungeonjoe.view.component.Icon;
+				switch (item.type)
+				{
+					case DungeonItem.BALL:
+						icon = new CrystalBall();
+						break;
+					
+					case DungeonItem.DAMSEL:
+						icon = new Damsel();
+						break;
+					
+					case DungeonItem.DRAGON:
+						icon = new Dragon();
+						break;
+					
+					case DungeonItem.PIT:
+						icon = new Pit();
+						break;
+					
+					case DungeonItem.ROPE:
+						icon = new Rope();
+						break;
+					
+					case DungeonItem.SWORD:
+						icon = new Sword();
+						break;
+					
+					case DungeonItem.TREASURE:
+						icon = new Treasure();
+						break;
+
+					case DungeonItem.WYVERN:
+						icon = new Wyvern();
+						break;
+					
+				}	
+				displayIcon( icon, item.type );
+			}
+			
+			private function displayIcon( icon:IVisualElement, type:String ):void
+			{
+				
+				switch ( type ) 
+				{
+					case DungeonItem.BALL:
+					case DungeonItem.ROPE:
+					case DungeonItem.SWORD:
+						tools.addElement( icon );
+						break;
+					
+					case DungeonItem.DAMSEL:
+					case DungeonItem.TREASURE:
+						booty.addElement( icon );
+						break;
+					
+					case DungeonItem.DRAGON:
+						dragon.addElement( icon );
+						break;
+						
+					case DungeonItem.PIT:
+						pits.addElement( icon );
+						break;
+
+					case DungeonItem.WYVERN:
+						wyverns.addElement( icon );
+						break;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<!-- STATES -->
+	<s:states>
+		<s:State name="Idle" />
+		<s:State name="Level" />
+	</s:states>
+	
+	<!-- EFFECTS -->
+	<fx:Declarations>
+		<s:Parallel id="fxShow" >
+			<s:Fade alphaFrom="0" alphaTo="1" duration="450"/>
+			<s:Move yFrom="1000" yTo="0" duration="450"/>
+		</s:Parallel>
+	</fx:Declarations>
+
+	<s:HGroup width="100%" height="100" verticalAlign="middle">
+		<s:HGroup id="booty" 	width="33%" height="100%" horizontalAlign="left"/>
+		<s:HGroup id="dragon" 	width="33%" height="100%" horizontalAlign="center"/>
+		<s:HGroup id="tools"	width="33%" height="100%" horizontalAlign="right"/>
+	</s:HGroup>
+	
+	<s:Group width="100%" height="100%" >
+		<s:TileGroup id="pits" 		width="300" left="0"/>
+		<s:TileGroup id="wyverns" 	width="300" right="0"/>
+	</s:Group>
+	
+</s:VGroup>

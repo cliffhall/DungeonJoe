@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Dungeon Joe
+By Cliff Hall <clifford.hall@futurescale.com>
+Copyright(c) 2010, Futurescale, Inc. Some rights reserved.
+-->
+<component:Icon xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				xmlns:component="com.futurescale.dungeonjoe.view.component.*" 
+				creationComplete="initIcon()">
+
+	<fx:Script>
+		<![CDATA[
+			import com.futurescale.dungeonjoe.controller.constant.embed.EmbeddedImages;
+			import com.futurescale.dungeonjoe.controller.constant.view.ViewStates;
+			import com.futurescale.dungeonjoe.model.entity.DungeonItem;
+			
+			public static const NAME:String = DungeonItem.ROPE;
+			
+			public function initIcon():void
+			{
+				this.type=NAME; 
+				setState(ViewStates.ICON_ROOM);
+			}
+		]]>
+	</fx:Script>
+	
+	<component:states>
+		<s:State name="Idle" />
+		<s:State name="Slot" />
+		<s:State name="Have" />
+		<s:State name="Room" />
+	</component:states>
+	
+	<!-- BACKGROUND -->
+	<mx:Image id="background" source="{EmbeddedImages.GREEN_BURST}" x="0" y="0" includeIn="Have"/>
+
+	<!-- SLOT -->
+	<mx:Image id="slot" source="{EmbeddedImages.SLOT_ROPE}" x="0" y="0" includeIn="Slot"/>
+	
+	<!-- OBJECT -->
+	<mx:Image id="object" source="{EmbeddedImages.OBJECT_ROPE}" x="0" y="0" excludeFrom="Slot"/>
+	
+</component:Icon>

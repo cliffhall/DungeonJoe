@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:component="com.futurescale.dungeonjoe.view.component.*"
+		 verticalAlign="top" gap="0" horizontalAlign="right" showEffect="{fxScoreIn}"
+		 width="1275" height="600" paddingTop="0" paddingBottom="0"
+		 creationComplete="setState(ViewStates.SCORE_DISPLAY_IDLE)" >
+
+	<fx:Script>
+		<![CDATA[
+			import com.futurescale.dungeonjoe.controller.constant.view.ViewStates;
+			import com.futurescale.dungeonjoe.model.entity.Character;
+			
+			import mx.controls.Label;
+			
+			[Bindable] private var high:Number = 0;
+			
+			/**
+			 * Set the View State for the Score display.
+			 */
+			public function setState( viewState:String ):void
+			{
+				switch (viewState)
+				{
+					case ViewStates.SCORE_DISPLAY_IDLE:
+						visible=false;
+						currentState = viewState;
+						level1.visible = false;
+						level2.visible = false;
+						level3.visible = false;
+						level4.visible = false;
+						totalScore.visible = false;
+						break;
+
+					case ViewStates.SCORE_DISPLAY_SCORE:
+						visible=true;
+						currentState = viewState;
+						break;
+				}
+			}
+			
+			public function populateDisplay( character:Character, highScore:Number ):void
+			{ 
+				if (character.level>1) level1.populateDisplay( character, 1 );
+				if (character.level>2) level2.populateDisplay( character, 2 );
+				if (character.level>3) level3.populateDisplay( character, 3 );
+				if (character.level>4) level4.populateDisplay( character, 4 );
+				total.text = character.finalScore().toString();
+				high = highScore;
+				totalScore.visible = true;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<!-- EFFECTS -->
+	<fx:Declarations>
+		<s:Fade id="fxScoreIn" duration="750" target="{this}" alphaFrom="0" alphaTo="1"/>
+	</fx:Declarations>
+	
+	<!-- STATES -->
+	<s:states>
+		<s:State name="Idle" />
+		<s:State name="Score" />
+	</s:states>
+	
+	<component:LevelScore id="level1" />
+	<component:LevelScore id="level2" />
+	<component:LevelScore id="level3" />
+	<component:LevelScore id="level4" />
+	<s:VGroup horizontalAlign="right" id="totalScore">
+		<mx:Label text="____" styleName="locationDisplay"  visible="{Number(total.text) &gt; 0}"/>
+		<s:HGroup>
+			<mx:Label text="High Score  " styleName="locationDisplay"  visible="{high &gt; 0}"/>
+			<mx:Label id="highest" text="{high}" styleName="locationDisplay" visible="{high &gt; 0}"/>
+			<mx:Spacer width="600"/>
+			<mx:Label text="Score  " styleName="locationDisplay"/>
+			<mx:Label id="total" styleName="locationDisplay"/>
+		</s:HGroup>
+	</s:VGroup>
+
+</s:VGroup>
