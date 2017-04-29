@@ -9,7 +9,7 @@ Read more [here.](http://bit.ly/dungeon-joe)
 ![Dungeon Joe](screenshot.png "Dungeon Joe")
 
 ## Platforms / Technologies
-* [PureMVC](https://github.com/PureMVC/puremvc-as3-standard-framework/wiki)
+* [PureMVC Standard Framework for AS3](https://github.com/PureMVC/puremvc-as3-standard-framework/wiki)
 * [PureMVC State Machine Utility](https://github.com/PureMVC/puremvc-as3-util-statemachine/wiki)
 * [ActionScript 3](https://en.wikipedia.org/wiki/ActionScript) 
 * [Adobe Flex 4.5](http://www.adobe.com/devnet/flex/articles/introducing-flex45sdk.html)
