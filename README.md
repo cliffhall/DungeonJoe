@@ -4,7 +4,7 @@ Roam the 10×10 Dungeon in search of the Hidden Treasure and the Damsel in Distr
 
 Keep an eye out for the Magic Sword, which you will need to slay the Dragon, the Crystal Ball, with which to see the contents of Adjacent Rooms, and the Enchanted Rope, which will save you if you fall into a Pit. Beware the Wyverns who fly about the Dungeon and may carry you off to another room at any time. Go in Good Health, return Wealthy and Victorious!
 
-Read more [here.](http://futurescale.com/2011/01/08/dungeon-joe-a-casual-touch-focused-strategy-game/)
+Read more [here.](http://bit.ly/dungeon-joe)
 
 ![Dungeon Joe](screenshot.png "Dungeon Joe")
 
