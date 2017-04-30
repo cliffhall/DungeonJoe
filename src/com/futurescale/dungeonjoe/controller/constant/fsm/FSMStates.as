@@ -14,7 +14,7 @@ package com.futurescale.dungeonjoe.controller.constant.fsm
 		public static const WELCOMING:String		= FSM_STATE+"welcoming";
 
 		// Quitting the game
-		public static const QUITTING:String			= FSM_STATE+"quitting";
+		public static const QUITTING:String         = FSM_STATE+"quitting";
 
 		// Preparing the level about to be played
 		public static const PREPARING_LEVEL:String	= FSM_STATE+"preparing/level";
