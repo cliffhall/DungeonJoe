@@ -273,10 +273,6 @@ Copyright(c) 2010, Futurescale, Inc. Some rights reserved.
 			{
 				dispatchEvent( new Event( DONE_VIEWING ) );
 			}
-			
-			
-			
-			
 		]]>
 	</fx:Script>
 

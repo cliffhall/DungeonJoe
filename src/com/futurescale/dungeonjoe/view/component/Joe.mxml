@@ -23,14 +23,14 @@ Copyright(c) 2010, Futurescale, Inc. Some rights reserved.
 				switch ( viewState ) 
 				{
 					case ViewStates.CHARACTER_IDLE:
-						visible 		= false;
-						currentState 	= viewState;
+						visible         = false;
+						currentState    = viewState;
 						break;
 					
 					case ViewStates.CHARACTER_DEAD:
 					case ViewStates.CHARACTER_PLAY:
-						visible 		= true;
-						currentState	= viewState;
+						visible         = true;
+						currentState    = viewState;
 						break;
 				}
 			}

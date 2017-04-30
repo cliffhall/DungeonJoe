@@ -1,24 +1,22 @@
 /*
-	Dungeon Joe
-	By Cliff Hall <clifford.hall@futurescale.com>
-	Copyright(c) 2010, Futurescale, Inc. Some rights reserved.
-*/
+ Dungeon Joe
+ By Cliff Hall <clifford.hall@futurescale.com>
+ Copyright(c) 2010, Futurescale, Inc. Some rights reserved.
+ */
 package com.futurescale.dungeonjoe.model.entity
 {
 	import com.futurescale.dungeonjoe.model.modelns;
 
 	use namespace modelns;
+
 	public class Dungeon
 	{
 		public var rooms:Array;		// room[location] map
 		public var pits:Array;		// locations of the pits
 		public var wyverns:Array;	// locations of the wyverns
 		public var dragon:String	// location of dragon
-		
-		public function Dungeon( )
-		{
-		}
-		
+
+
 		/**
 		 * Create a whole new set of empty rooms
 		 * <P>
@@ -35,10 +33,10 @@ package com.futurescale.dungeonjoe.model.entity
 				for (var col:Number=0; col<10; col++) {
 					var room:Room = new Room(row,col);
 					rooms[room.location] = room;
-				}  
-			}  
+				}
+			}
 		}
-				
+
 		/**
 		 * Add an item to the dungeon at the given coordinates.
 		 * <P>
@@ -50,24 +48,24 @@ package com.futurescale.dungeonjoe.model.entity
 			// add the item to the room
 			var room:Room = rooms[location];
 			room.addItem(item);
+
 			// also, store the locations of the pits and wyverns
-			switch (item.type) 
+			switch (item.type)
 			{
 				case DungeonItem.PIT:
 					pits.push(location);
 					break;
-				
+
 				case DungeonItem.WYVERN:
 					wyverns.push(location);
 					break;
-				
+
 				case DungeonItem.DRAGON:
 					dragon = location;
 					break;
-				
 			}
 		}
-		
+
 		/**
 		 * Remove an item from the dungeon.
 		 * <P>
@@ -81,7 +79,7 @@ package com.futurescale.dungeonjoe.model.entity
 			room.removeItem(type);
 		}
 
-		/** 
+		/**
 		 * Get the Room at the given location.
 		 */
 		public function getRoom( location:String ):Room
@@ -89,20 +87,21 @@ package com.futurescale.dungeonjoe.model.entity
 			return rooms[ location ];
 		}
 
-		/** 
+		/**
 		 * Get the four orthanganally adjacent Rooms
 		 * to a given room.
 		 */
 		public function getAdjacentRooms( room:Room ):Array
 		{
-			return [ getAdjacentRoomNorth( room ),
-					 getAdjacentRoomSouth( room ),
-					 getAdjacentRoomEast( room ),
-					 getAdjacentRoomWest( room )
-					];
+			return [
+				getAdjacentRoomNorth( room ),
+				getAdjacentRoomSouth( room ),
+				getAdjacentRoomEast( room ),
+				getAdjacentRoomWest( room )
+			];
 		}
-		
-		/** 
+
+		/**
 		 * Get the north adjacent room
 		 * <P>
 		 * Used by character when moving.</P>
@@ -114,8 +113,8 @@ package com.futurescale.dungeonjoe.model.entity
 			if (row <0) row = 9;
 			return rooms[ Room.getLocation( row ,room.col ) ];
 		}
-		
-		/** 
+
+		/**
 		 * Get the south adjacent room
 		 * <P>
 		 * Used by character when moving.</P>
@@ -127,8 +126,8 @@ package com.futurescale.dungeonjoe.model.entity
 			if ( row > 9 ) row = 0;
 			return rooms[ Room.getLocation( row , room.col ) ];
 		}
-		
-		/** 
+
+		/**
 		 * Get the east adjacent room
 		 * <P>
 		 * Used by character when moving.</P>
@@ -140,8 +139,8 @@ package com.futurescale.dungeonjoe.model.entity
 			if ( col > 9 ) col = 0;
 			return rooms[ Room.getLocation( room.row, col ) ];
 		}
-		
-		/** 
+
+		/**
 		 * Get the west adjacent room
 		 * <P>
 		 * Used by character when moving.</P>
@@ -154,8 +153,8 @@ package com.futurescale.dungeonjoe.model.entity
 			return rooms[ Room.getLocation( room.row, col ) ];
 		}
 
-		/** 
-		 * Get a random adjacent room. 
+		/**
+		 * Get a random adjacent room.
 		 * <P>
 		 * Used by wyverns when moving.</P>
 		 */
@@ -164,7 +163,7 @@ package com.futurescale.dungeonjoe.model.entity
 			var direction:Number = Math.floor( Math.random() * 4 );
 			return getAdjacentRooms(room)[direction];
 		}
-		
+
 		/**
 		 * Get a Room from the Dungeon at random.
 		 */
@@ -173,7 +172,7 @@ package com.futurescale.dungeonjoe.model.entity
 			// choose a random room location
 			var row:Number = Math.floor( Math.random() * 10 );
 			var col:Number = Math.floor( Math.random() * 10 );
-			
+
 			// return the actual room
 			return rooms[ Room.getLocation( row, col ) ];
 		}
@@ -183,14 +182,14 @@ package com.futurescale.dungeonjoe.model.entity
 		 */
 		public function getRandomEmptyRoom():Room
 		{
-			var room:Room;
-			do {
-				room = getRandomRoom();
-			} while ( !room.isEmpty() );
-				
-			return room;
+		var room:Room;
+		do {
+			room = getRandomRoom();
+		} while ( !room.isEmpty() );
+
+		return room;
 		}
-		
+
 		/**
 		 * Get an empty Room from the Dungeon at random.
 		 */
@@ -201,7 +200,7 @@ package com.futurescale.dungeonjoe.model.entity
 			{
 				if (adjacentRoom.hasItem(type)) {
 					found = true;
-					break
+					break;
 				}
 			}
 			return found;

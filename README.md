@@ -16,7 +16,7 @@ Read more [here.](http://bit.ly/dungeon-joe)
 * [Adobe Air](http://www.adobe.com/products/air/faq.html)
 
 ## License
-* Dungeon Joe - Copyright © 2011-2017 Cliff Hall 
+* Dungeon Joe - Copyright © 2010-2017 Cliff Hall 
 * PureMVC - Copyright © 2007-2017 Futurescale, Inc.
 * All rights reserved.
 
