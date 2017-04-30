@@ -39,6 +39,5 @@ package com.futurescale.dungeonjoe.controller.constant.fsm
 
 		// Taking the Treasure, Damsel, Rope, Sword or Crystal Ball
 		public static const TAKING_ITEM:String      = FSM_STATE+"taking/item";
-
 	}
 }
